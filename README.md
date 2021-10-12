@@ -2,9 +2,14 @@
 --------------
 Convert mail from mbox format (Thunderbird) to PST (Outlook)
 
+# Redemption.zip
+--------------
+You should install Redemption DLLs first (unzip and click on install.exe)
+
 # usage
 --------------
 Options :
+
 --gui
     Launch user interface
 	
@@ -22,3 +27,11 @@ Options :
 
 --quiet
 	Don't print anything
+
+# Parameters
+------------
+You can change input mbox folder name to another output PST folder name. You can use Regex to specify the input folder.
+Example :
+- Inbox => Courrier entrant
+- Sen[t]  => Email envoyés
+- Trash|Deleted  => Poubelle
