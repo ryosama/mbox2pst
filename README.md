@@ -6,7 +6,7 @@ Convert mail from mbox format (Thunderbird) to PST (Outlook)
 --------------
 You should install Redemption DLLs first (unzip and click on install.exe)
 
-# usage
+# Usage
 --------------
 Options :
 
@@ -19,6 +19,9 @@ Options :
 --pst=<output_pst_file>
 	The PST file converted (default is program_directory/out/Outlook.pst)
 
+--exclude=<mbox_folder_to_exlude>   (could be repeat)
+    To exclude some folders (Junk or Trash for example)
+
 --tempdir=<temporary_directory>
 	The temp directory (default is program_directory/tmp)
 
@@ -28,10 +31,17 @@ Options :
 --quiet
 	Don't print anything
 
-# Parameters
+# Examples
+------------
+`perl mbox2pst.pl --gui`
+
+`perl mbox2pst.pl --mboxdir=c:/users/thunderbird/Mail --pst=Outlook.pst --exclude=Trash --exclude=Junk`
+
+
+# Parameters (in GUI mode only)
 ------------
 You can change input mbox folder name to another output PST folder name. You can use Regex to specify the input folder.
 Example :
 - Inbox => Courrier entrant
-- Sen[t]  => Email envoyés
+- Sent  => Email envoyés
 - Trash|Deleted  => Poubelle

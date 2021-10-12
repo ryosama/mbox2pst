@@ -19,7 +19,7 @@ $main = Win32::GUI::Window->new(
     -name => 'Main',
     -text => 'mbox2pst',
     -width => 520,
-    -height=> 260,
+    -height=> 280,
     # -menu   => $menu,
     -left => CW_USEDEFAULT
 );
@@ -98,6 +98,22 @@ $main->AddButton(
 
 $y+=30;
 
+$main->AddCheckbox(
+    -name => 'CheckboxExcludeTrash',
+    -text => 'Exclure la poubelle',
+    -checked=> 1,
+    -pos => [ 20 , $y ]
+);
+
+$main->AddCheckbox(
+    -name => 'CheckboxExcludeJunk',
+    -text => 'Exclure les indésirables',
+    -checked=> 1,
+    -pos => [ 160 , $y ]
+);
+
+$y+=30;
+
 # main button for convert
 $main->AddButton(
 	-name => 'ButtonConvert',
@@ -161,11 +177,7 @@ $mainParameters->AddTextfield(
 	#-autovscroll=> 1,
 	-tabstop 	=> 1,
 	-readonly   => 0,
-    -text =>    "Inbox => Boîte de réception\r\n".
-                "Sent  => Élements envoyés\r\n".
-                "Trash => Élements supprimés\r\n".
-                "Junk  => Courrier indésirable\r\n".
-                "Draft => Brouillons"
+    -text =>    $rules
 );
 
 

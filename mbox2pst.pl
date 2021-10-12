@@ -17,12 +17,19 @@ use Win32::GUI::BitmapInline;
 
 $|=1;
 
-our ($mboxdir,$pst,$tempdir,$gui,$help,$quiet);
-GetOptions(	'mboxdir=s'=>\$mboxdir, 'pst=s'=>\$pst, 'tempdir=s'=>\$tempdir, 'gui!'=>\$gui,'help|usage!'=>\$help, 'quiet!'=>\$quiet) ;
+our ($mboxdir,$pst,$tempdir,@exclude,$gui,$help,$quiet);
+GetOptions(	'mboxdir=s'=>\$mboxdir, 'pst=s'=>\$pst, 'tempdir=s'=>\$tempdir, 'exclude=s'=>\@exclude, 'tempdir=s'=>\$tempdir, 'gui!'=>\$gui,'help|usage!'=>\$help, 'quiet!'=>\$quiet) ;
 
 our ($main,$mainParameters,%assets,$program_dir,$outlook_box,$pstObj,$total_message,$current_message,$mbox,$total_mbox_files) ;
 $total_mbox_files = 0;
 our $y=10;
+
+# convertion rules by default
+our $rules =    "Inbox => Boîte de réception\r\n".
+                "Sent  => Élements envoyés\r\n".
+                "Trash => Élements supprimés\r\n".
+                "Junk  => Courrier indésirable\r\n".
+                "Draft => Brouillons";
 
 
 # create gui if needed
@@ -132,6 +139,9 @@ Options :
 --pst=<output_pst_file>
 	The PST file converted (default is $program_dir/out/Outlook.pst)
 
+--exclude=<mbox_folder_to_exlude>   (could be repeat)
+    To exclude some folders (Junk or Trash for example)
+
 --tempdir=<temporary_directory>
 	The temp directory (default is $program_dir/tmp)
 
@@ -153,7 +163,7 @@ sub clean_last_run {
 
 # count the number of files to convert (for progress bar)
 sub countMboxs {
-	return if ($_ eq '.' || $_ eq '..' || -d $_ || /\.msf$/ || $_ eq 'filterlog.html' || $_ eq 'msgFilterRules.dat');
+	return if ($_ eq '.' || $_ eq '..' || -d $_ || /\.msf$/ || $_ eq 'filterlog.html' || $_ eq 'msgFilterRules.dat' || in_array($_,\@exclude) );
     $total_mbox_files++;
 }
 
@@ -165,6 +175,10 @@ sub extractMboxToFiles {
     $mbox =~ s/^$mboxdir\/?//; # remove leading path
 
 	return if ($_ eq '.' || $_ eq '..' || -d $_ || /\.msf$/ || $_ eq 'filterlog.html' || $_ eq 'msgFilterRules.dat');
+    if (in_array($_,\@exclude)) {
+        print "\nExclude '$_'\n";
+        return;
+    }
 
     $main->StatusBar->Text("$mbox : Extraction des mails") if $gui;
 
@@ -185,6 +199,7 @@ sub extractMboxToFiles {
                 $buffer = '';		# reset buffer
             }
             $total_message++;
+            $main->StatusBar->Text("$mbox : Extraction des mails ($total_message message)") if $gui;
         } # end if new message
 
         $buffer .= $line ; # put line into buffer
@@ -194,7 +209,7 @@ sub extractMboxToFiles {
     $outlook_box =~ s/\.sbd//g;
 
     # get convert name rules
-    my @name_convert_rules = split /[\r\n]+/, $mainParameters->TextfieldParameters->Text();
+    my @name_convert_rules = split ( /[\r\n]+/, $gui ? $mainParameters->TextfieldParameters->Text() : $rules );
     foreach my $rule (@name_convert_rules) {
         $rule =~ s/^\s*//; # ltrim
         $rule =~ s/\s*$//; # rtrim
@@ -225,6 +240,7 @@ sub add_to_pst {
         $current_message++;
 
         if ($gui) { # update partial progress bar
+            Win32::GUI::DoEvents();
             $main->ProgressBarPartial->StepIt();
             $main->StatusBar->Text("$mbox : message $current_message / $total_message ".sprintf('(%0.1f %%)',($current_message / $total_message) * 100));
         }
@@ -262,5 +278,16 @@ sub ButtonChooseOutputFilename_Click {
 sub ButtonConvert_Click {
     $mboxdir = $main->TextfieldInputDir->Text();
     $pst     = $main->TextfieldOutputFilename->Text();
+    push @exclude, 'Trash' if $main->CheckboxExcludeTrash->Checked();
+    push @exclude, 'Junk'  if $main->CheckboxExcludeJunk->Checked();
 	do_convert();   
+}
+
+sub in_array {
+    local $_;
+    my ($str,$arr) = @_;
+    foreach (@$arr) {
+        return 1 if $_ eq $str;
+    }
+    return 0;
 }
