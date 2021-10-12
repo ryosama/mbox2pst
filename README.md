@@ -5,6 +5,9 @@ Convert mail from mbox format (Thunderbird) to PST (Outlook)
 # usage
 --------------
 Options :
+--gui
+    Launch user interface
+	
 --mboxdir=<mbox_input_directory> (required)
 	The mbox directory you want to convert
 

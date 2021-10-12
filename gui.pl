@@ -19,7 +19,7 @@ $main = Win32::GUI::Window->new(
     -name => 'Main',
     -text => 'mbox2pst',
     -width => 520,
-    -height=> 230,
+    -height=> 260,
     # -menu   => $menu,
     -left => CW_USEDEFAULT
 );
@@ -40,13 +40,15 @@ $main->AddLabel(
     -text => "Répertoire mbox"
 );
 
+
 # texte qui contient le fichier de sortie
 $main->AddTextfield(
     -name 	=> 'TextfieldInputDir',
     -pos 	=> [100, $y],
     -size	=> [300, 20],
-    -text 	=> $ENV{'HOME'}.'\\.Mail'
+    -text 	=> $mboxdir || $ENV{'HOME'}.'\\.Mail'
 );
+
 
 # bouton pour choisir le fichier de sortie
 $main->AddButton(
@@ -95,12 +97,26 @@ $y+=60;
 
 # executer le programme externe
 $main->AddProgressBar(
-	-name => 'ProgressBar',
+	-name => 'ProgressBarPartial',
 	-pos => [ 20, $y ],
     -background=>[0,255,85],
     -smooth   => 1,
-    -size => [460, 20]
+    -size => [460, 20],
 );
+$main->ProgressBarPartial->SetStep(1); # increase 1 by 1
+
+$y+=30;
+
+# executer le programme externe
+$main->AddProgressBar(
+	-name => 'ProgressBarTotal',
+	-pos => [ 20, $y ],
+    -background=>[0,255,85],
+    -smooth   => 1,
+    -size => [460, 20],
+);
+$main->ProgressBarTotal->SetStep(1); # increase 1 by 1
+$main->ProgressBarTotal->SetPos(0); # increase 1 by 1
 
 
 # affiche la fenetre principale
