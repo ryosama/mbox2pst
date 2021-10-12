@@ -20,7 +20,7 @@ $|=1;
 our ($mboxdir,$pst,$tempdir,$gui,$help,$quiet);
 GetOptions(	'mboxdir=s'=>\$mboxdir, 'pst=s'=>\$pst, 'tempdir=s'=>\$tempdir, 'gui!'=>\$gui,'help|usage!'=>\$help, 'quiet!'=>\$quiet) ;
 
-our ($main,%assets,$program_dir,$outlook_box,$pstObj,$total_message,$current_message,$mbox,$total_mbox_files) ;
+our ($main,$mainParameters,%assets,$program_dir,$outlook_box,$pstObj,$total_message,$current_message,$mbox,$total_mbox_files) ;
 $total_mbox_files = 0;
 our $y=10;
 
@@ -34,7 +34,7 @@ if ($gui) {
     # get thunderbird mail directory
     find(\&getPrefFile, $ENV{'APPDATA'}.'\\Thunderbird\\Profiles\\');
 
-    require('./gui.pl');
+    require('./gui.pl'); # draw GUI
 } else {
     do_convert();
 }
@@ -192,11 +192,16 @@ sub extractMboxToFiles {
 
     $outlook_box = $mbox ;
     $outlook_box =~ s/\.sbd//g;
-    $outlook_box =~ s/Inbox/Boîte de réception/;
-    $outlook_box =~ s/Sent/Élements envoyés/;
-    $outlook_box =~ s/Trash/Élements supprimés/;
-    $outlook_box =~ s/Junk/Courrier indésirable/;
-    $outlook_box =~ s/Draft/Brouillons/;
+
+    # get convert name rules
+    my @name_convert_rules = split /[\r\n]+/, $mainParameters->TextfieldParameters->Text();
+    foreach my $rule (@name_convert_rules) {
+        $rule =~ s/^\s*//; # ltrim
+        $rule =~ s/\s*$//; # rtrim
+        my ($from,$to) = split(/\s*=>\s*/, $rule);
+        $outlook_box =~ s/$from/$to/;
+    }
+
     print "\nAdd message from '$mbox' to '$outlook_box'\n" unless $quiet;
 
     if ($gui) {

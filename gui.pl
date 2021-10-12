@@ -1,5 +1,5 @@
 ############################################ Load assets (icons and bitmaps) ############################################
-foreach (qw/folder_16x16.ico file_16x16.ico/)  {
+foreach (qw/folder_16x16.ico file_16x16.ico gear_32x32.ico/)  {
     my $path = '';
     if (-e "gfx/$_") {
         $path = "gfx/$_";
@@ -14,7 +14,7 @@ foreach (qw/folder_16x16.ico file_16x16.ico/)  {
     }
 }
 
-
+# main window
 $main = Win32::GUI::Window->new(
     -name => 'Main',
     -text => 'mbox2pst',
@@ -25,7 +25,7 @@ $main = Win32::GUI::Window->new(
 );
 $main->Center();
 
-# status bar pour les messages
+# status bar for messages
 $main->AddStatusBar(
     -name => 'StatusBar',
     -text => '',
@@ -33,15 +33,14 @@ $main->AddStatusBar(
     -height => 20
 );
 
-# choix du répertoire d'input
-# libelle pour nom du fichier output
+# label for input directory
 $main->AddLabel(
     -pos => [ 20, $y ],
     -text => "Répertoire mbox"
 );
 
 
-# texte qui contient le fichier de sortie
+# text field for input directory
 $main->AddTextfield(
     -name 	=> 'TextfieldInputDir',
     -pos 	=> [100, $y],
@@ -50,7 +49,7 @@ $main->AddTextfield(
 );
 
 
-# bouton pour choisir le fichier de sortie
+# button to chosse input directory
 $main->AddButton(
     -name 	=> 'ButtonChooseInputDir',
     -pos    => [ 410, $y-5 ],
@@ -58,16 +57,30 @@ $main->AddButton(
     -icon   => $assets{'folder_16x16.ico'}
 );
 
+# parameters button
+$main->AddButton(
+    -name 	=> 'ButtonParameters',
+    -pos    => [ 450, $y-5 ],
+    -size   => [45,40],
+    -icon   => $assets{'gear_32x32.ico'},
+    -onClick=> sub {
+        $mainParameters->Top( $main->Top() );
+		$mainParameters->Left( $main->Left() + $main->Width() );
+		#$mainParameters->Height( $main->Height() );
+		$mainParameters->Show();
+    }
+);
+
 $y+=30;
 
 
-# libelle pour nom du fichier output
+# label for output file
 $main->AddLabel(
     -pos => [ 20, $y ],
     -text => 'Fichier PST'
 );
 
-# texte qui contient le fichier de sortie
+# text field for output file
 $main->AddTextfield(
     -name 	=> 'TextfieldOutputFilename',
     -pos 	=> [100, $y],
@@ -75,7 +88,7 @@ $main->AddTextfield(
     -text 	=> $ENV{'HOME'}.'\\Desktop\\Outlook.pst'
 );
 
-# bouton pour choisir le fichier de sortie
+# button to choose output file
 $main->AddButton(
     -name 	=> 'ButtonChooseOutputFilename',
     -pos    => [ 410, $y-5 ],
@@ -85,7 +98,7 @@ $main->AddButton(
 
 $y+=30;
 
-# executer le programme externe
+# main button for convert
 $main->AddButton(
 	-name => 'ButtonConvert',
 	-pos => [ 20, $y ],
@@ -95,7 +108,7 @@ $main->AddButton(
 
 $y+=60;
 
-# executer le programme externe
+# progress bar 1 (partial)
 $main->AddProgressBar(
 	-name => 'ProgressBarPartial',
 	-pos => [ 20, $y ],
@@ -107,7 +120,7 @@ $main->ProgressBarPartial->SetStep(1); # increase 1 by 1
 
 $y+=30;
 
-# executer le programme externe
+# progress bar 2 (global)
 $main->AddProgressBar(
 	-name => 'ProgressBarTotal',
 	-pos => [ 20, $y ],
@@ -119,7 +132,44 @@ $main->ProgressBarTotal->SetStep(1); # increase 1 by 1
 $main->ProgressBarTotal->SetPos(0); # increase 1 by 1
 
 
-# affiche la fenetre principale
+
+
+# parameters window
+$mainParameters = Win32::GUI::Window->new(
+	-name  => "mainParameters",
+	-title => "Paramètres",
+	-pos   => [ 0,0 ],
+	-size  => [ 300, 270 ],
+);
+
+# label for output file
+$mainParameters->AddLabel(
+    -pos => [ 0, 10 ],
+    -text => 'Convertion des noms de répertoire (regex possible)'
+);
+
+
+# textarea pour la sortie du programme externe
+$mainParameters->AddTextfield(
+	-name 		=> 'TextfieldParameters',
+	-pos 		=> [ 0, 30 ],
+    -size	    => [300, 200],
+	-multiline 	=> 1,
+	-hscroll   	=> 1,
+	-vscroll   	=> 1,
+	#-autohscroll=> 1,
+	#-autovscroll=> 1,
+	-tabstop 	=> 1,
+	-readonly   => 0,
+    -text =>    "Inbox => Boîte de réception\r\n".
+                "Sent  => Élements envoyés\r\n".
+                "Trash => Élements supprimés\r\n".
+                "Junk  => Courrier indésirable\r\n".
+                "Draft => Brouillons"
+);
+
+
+# display main window
 $main->Show();
 Win32::GUI::DoEvents();
 Win32::GUI::Dialog();
