@@ -8,7 +8,6 @@ use File::Slurp;
 use File::Basename;
 use Cwd;
 use Getopt::Long;				# manage options
-use Data::Dumper;
 
 # for gui
 use Win32::GUI();
@@ -41,7 +40,10 @@ if ($gui) {
     # get thunderbird mail directory
     find(\&getPrefFile, $ENV{'APPDATA'}.'\\Thunderbird\\Profiles\\');
 
-    require('./gui.pl'); # draw GUI
+    # draw GUI
+    require "./gui.pl" if -e "./gui.pl";									# for direct execution
+	require "$ENV{PAR_TEMP}/inc/gui.pl" if -e "$ENV{PAR_TEMP}/inc/gui.pl"; 	# for compilation
+    
 } else {
     do_convert();
 }
@@ -248,41 +250,7 @@ sub add_to_pst {
 }
 
 
-############################################################# EVENT GUI ##########################################
-
-# select directory to convert
-sub ButtonChooseInputDir_Click {
-    my $dir = Win32::GUI::BrowseForFolder (
-        -title     => "Choissiez un répertoire mbox",
-        -directory => $mboxdir || $ENV{'HOME'}.'\\.Mail',
-        -folderonly => 1,
-    );
-    $main->TextfieldInputDir->Text($dir);
-}
-
-
-# select output PSF file
-sub ButtonChooseOutputFilename_Click {
-	my @file = Win32::GUI::GetOpenFileName(
-		-filter => ['PST - Outlook format', '*.pst',
-					'All files - *.*', '*'
-					],
-		-directory => $ENV{'HOME'}.'\\Desktop',
-		-title => 'Choissiez un fichier de sortie PST',
-		-file => 'Outlook.pst'
-	);
-	$main->TextfieldOutputFilename->Text($file[0]);
-}
-
-# do convert
-sub ButtonConvert_Click {
-    $mboxdir = $main->TextfieldInputDir->Text();
-    $pst     = $main->TextfieldOutputFilename->Text();
-    push @exclude, 'Trash' if $main->CheckboxExcludeTrash->Checked();
-    push @exclude, 'Junk'  if $main->CheckboxExcludeJunk->Checked();
-	do_convert();   
-}
-
+#####################################
 sub in_array {
     local $_;
     my ($str,$arr) = @_;

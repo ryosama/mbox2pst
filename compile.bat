@@ -1,0 +1,1 @@
+pp -a gfx\folder_16x16.ico -a gfx\file_16x16.ico -a gfx\gear_32x32.ico -a gui.pl -o mbox2pst.exe mbox2pst.pl
