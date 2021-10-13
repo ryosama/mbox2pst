@@ -45,7 +45,7 @@ $main->AddTextfield(
     -name 	=> 'TextfieldInputDir',
     -pos 	=> [100, $y],
     -size	=> [300, 20],
-    -text 	=> $mboxdir || $ENV{'HOME'}.'\\.Mail'
+    -text 	=> $mboxdir || File::HomeDir::my_home().'\\.Mail'
 );
 
 
@@ -66,7 +66,6 @@ $main->AddButton(
     -onClick=> sub {
         $mainParameters->Top( $main->Top() );
 		$mainParameters->Left( $main->Left() + $main->Width() );
-		#$mainParameters->Height( $main->Height() );
 		$mainParameters->Show();
     }
 );
@@ -85,7 +84,7 @@ $main->AddTextfield(
     -name 	=> 'TextfieldOutputFilename',
     -pos 	=> [100, $y],
     -size	=> [300, 20],
-    -text 	=> $ENV{'HOME'}.'\\Desktop\\Outlook.pst'
+    -text 	=> File::HomeDir::my_desktop().'\\Outlook.pst'
 );
 
 # button to choose output file
@@ -195,10 +194,10 @@ exit(0);
 sub ButtonChooseInputDir_Click {
     my $dir = Win32::GUI::BrowseForFolder (
         -title     => "Choissiez un répertoire mbox",
-        -directory => $mboxdir || $ENV{'HOME'}.'\\.Mail',
+        -directory => $main->TextfieldInputDir->Text(),
         -folderonly => 1,
     );
-    $main->TextfieldInputDir->Text($dir);
+    $main->TextfieldInputDir->Text($dir) if length($dir) > 0;
 }
 
 
@@ -208,11 +207,11 @@ sub ButtonChooseOutputFilename_Click {
 		-filter => ['PST - Outlook format', '*.pst',
 					'All files - *.*', '*'
 					],
-		-directory => $ENV{'HOME'}.'\\Desktop',
+		-directory => $main->TextfieldOutputFilename->Text(),
 		-title => 'Choissiez un fichier de sortie PST',
 		-file => 'Outlook.pst'
 	);
-	$main->TextfieldOutputFilename->Text($file[0]);
+	$main->TextfieldOutputFilename->Text($file[0]) if length($file[0]) > 0;
 }
 
 # do convert

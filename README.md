@@ -11,6 +11,7 @@ Convert mails from mbox format (Thunderbird) to PST (Outlook)
 	- File::Slurp
 	- Data::Uniqid
 	- File::Find
+	- File::HomeDir
 	- Cwd
 
 

@@ -8,6 +8,10 @@ use File::Slurp;
 use File::Basename;
 use Cwd;
 use Getopt::Long;				# manage options
+use File::HomeDir;
+
+#use Data::Dumper;print Dumper(\%ENV);exit;
+#print File::HomeDir::my_desktop();exit;
 
 # for gui
 use Win32::GUI();
@@ -80,10 +84,10 @@ sub do_convert {
 
     print "Input directory : $mboxdir\n" unless $quiet;
 
-    $tempdir = $tempdir || "$program_dir/tmp";
+    $tempdir = $tempdir || "$ENV{TEMP}\\mbox2pst";
     mkpath($tempdir);
 
-    $pst = $pst || "$program_dir/out/Outlook.pst";
+    $pst = $pst || File::HomeDir::my_desktop()."/Outlook.pst";
     mkpath(dirname($pst));
     print "Export PST file : $pst\n" unless $quiet;
 
@@ -139,13 +143,13 @@ Options :
 	The mbox directory you want to convert
 
 --pst=<output_pst_file>
-	The PST file converted (default is $program_dir/out/Outlook.pst)
+	The PST file converted (default is Desktop/Outlook.pst)
 
 --exclude=<mbox_folder_to_exlude>   (could be repeat)
     To exclude some folders (Junk or Trash for example)
 
 --tempdir=<temporary_directory>
-	The temp directory (default is $program_dir/tmp)
+	The temp directory (default is <user temp directory>/mbox2pst)
 
 --usage or --help
 	Display this message
