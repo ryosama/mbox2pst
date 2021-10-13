@@ -1,7 +1,7 @@
 # mbox2pst
 Convert mails from mbox format (Thunderbird) to PST (Outlook)
 
-![Gui Screenshot](https://github.com/ryosama/go-sprite/raw/master/gfx/gui-screenshot.png "GUI Screenshot")
+![Gui Screenshot](https://raw.githubusercontent.com/ryosama/mbox2pst/master/gfx/gui-screenshot.png "GUI Screenshot")
 
 # Dependencies
 - Redemption.zip : You should install Redemption DLLs first (unzip and click on install.exe)
