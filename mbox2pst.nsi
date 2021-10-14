@@ -1,8 +1,11 @@
+!define AppName "mbox2pst"
+
 ; The name of the installer
-Name "mbox2pst Installer"
+Name "${AppName} Installer"
 
 ; The file to write
-OutFile "setup_mbox2pst.exe"
+OutFile "setup_${AppName}.exe"
+
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
@@ -11,7 +14,7 @@ RequestExecutionLevel admin
 Unicode True
 
 ; The default installation directory
-InstallDir $PROGRAMFILES\mbox2pst
+InstallDir $PROGRAMFILES\${AppName}
 
 ;--------------------------------
 
@@ -29,8 +32,12 @@ Section "" ;No components page, name is not important
   SetOutPath $INSTDIR
   
   ; Put file there
-  File mbox2pst.exe
-  File Redemption\*.*
-  CreateShortcut "$DESKTOP\mbox2pst.lnk" "$INSTDIR\mbox2pst.exe" "--gui" "$INSTDIR\mbox2pst.exe"
+  File ${AppName}.exe
+  File /r Redemption
+  CreateShortcut  "$DESKTOP\${AppName}.lnk"               "$INSTDIR\${AppName}.exe" "--gui" "$INSTDIR\${AppName}.exe"
+  CreateDirectory "$SMPROGRAMS\${AppName}"
+  CreateShortCut  "$SMPROGRAMS\${AppName}\${AppName}.lnk" "$INSTDIR\${AppName}.exe" "--gui" "$INSTDIR\${AppName}.exe"
+  ExecShell "" "$INSTDIR\Redemption\Install.exe"
 
 SectionEnd ; end the section
+
