@@ -29,8 +29,8 @@ our $y=10;
 
 # convertion rules by default
 our $rules =    "Inbox => Boîte de réception\r\n".
-                "Sent  => Élements envoyés\r\n".
-                "Trash => Élements supprimés\r\n".
+                "Sent  => Éléments envoyés\r\n".
+                "Trash => Éléments supprimés\r\n".
                 "Junk  => Courrier indésirable\r\n".
                 "Draft => Brouillons";
 
@@ -119,7 +119,6 @@ sub do_convert {
     if ($gui) {
         find(\&countMboxs, $mboxdir);
         $main->ProgressBarTotal->SetRange(0,$total_mbox_files);
-        print "total_mbox_files=$total_mbox_files\n";
     }
 
     find(\&extractMboxToFiles, $mboxdir);
