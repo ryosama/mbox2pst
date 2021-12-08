@@ -40,4 +40,3 @@ Section "" ;No components page, name is not important
   ExecShell "" "$INSTDIR\Redemption\Install.exe"
 
 SectionEnd ; end the section
-

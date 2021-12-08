@@ -4,9 +4,11 @@ Convert mails from mbox format (Thunderbird) to PST (Outlook)
 ![Gui Screenshot](https://raw.githubusercontent.com/ryosama/mbox2pst/master/gfx/gui-screenshot.png "GUI Screenshot")
 
 # Dependencies
-- Redemption.zip : You should install Redemption DLLs first (unzip and click on install.exe)
+- [Redemption.zip](https://www.dimastr.com/redemption/download.htm) : You should install Redemption DLLs first (unzip and click on install.exe)
 
-- Perl package (`cpan install My::Perl::Package`)
+- To compile the setup with NSIS, you must unzip Redemption.zip into the sub directory "Redemption"
+
+- Install the following Perl package (`cpan install My::Perl::Package`)
 	- Email::PST::Win32
 	- File::Slurp
 	- Data::Uniqid
