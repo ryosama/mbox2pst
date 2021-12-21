@@ -9,6 +9,7 @@ use File::Basename;
 use Cwd;
 use Getopt::Long;				# manage options
 use File::HomeDir;
+use List::Util qw/any/;
 
 #use Data::Dumper;print Dumper(\%ENV);exit;
 #print File::HomeDir::my_desktop();exit;
@@ -179,7 +180,7 @@ sub extractMboxToFiles {
     $mbox = $File::Find::name;
     $mbox =~ s/^$mboxdir\/?//; # remove leading path
 
-	return if ($_ eq '.' || $_ eq '..' || -d $_ || /\.msf$/ || $_ eq 'filterlog.html' || $_ eq 'msgFilterRules.dat');
+	return if ($_ eq '.' || $_ eq '..' || -d $_ || /\.msf$/ || $_ eq 'filterlog.html' || $_ eq 'msgFilterRules.dat' || $_ eq 'popstate.dat');
     if (in_array($_,\@exclude)) {
         print "\nExclude '$_'\n";
         return;
@@ -255,10 +256,6 @@ sub add_to_pst {
 
 #####################################
 sub in_array {
-    local $_;
-    my ($str,$arr) = @_;
-    foreach (@$arr) {
-        return 1 if $_ eq $str;
-    }
-    return 0;
+    my ($search_for,$arr) = @_;
+	return any { $_ eq $search_for } @$arr;
 }
